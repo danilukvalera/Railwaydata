@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface CarriageTypeRepository extends CrudRepository<CarriageType, Long> {
-    List<CarriageType> findByType(String type);
-    CarriageType findById(long id);
+public interface CarriageTypeRepository extends CrudRepository<CarriageType, Integer> {
+//    List<CarriageType> findByType(String type);
+//    CarriageType findById(int id);
 }

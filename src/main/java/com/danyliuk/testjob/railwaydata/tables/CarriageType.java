@@ -9,10 +9,12 @@ import jakarta.persistence.Id;
 public class CarriageType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     private String type;
     private int numberSeats;
 
+/*
+//---------------для Н2--------------------
     protected CarriageType() {
     }
 
@@ -20,13 +22,23 @@ public class CarriageType {
         this.type = type;
         this.numberSeats = numberSeats;
     }
+//------------------------------------------
+*/
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setNumberSeats(int numberSeats) {
+        this.numberSeats = numberSeats;
     }
 
     public int getNumberSeats() {

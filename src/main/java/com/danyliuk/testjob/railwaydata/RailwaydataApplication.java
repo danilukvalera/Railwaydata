@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// "scada_user" --dP "simple_pass"
+//http://localhost:8080/demo/add%20-d%20type=shared%20-d%20numberSeats=81
+
 @SpringBootApplication
-@RestController
+//@RestController
 public class RailwaydataApplication {
 	private static final Logger log = LoggerFactory.getLogger(RailwaydataApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(RailwaydataApplication.class, args);
 	}
-
-	private String typeCar = new String("111");
+/*
+//---------------для Н2--------------------
 	private CarriageTypeRepository repository;
 
 	@Bean
@@ -39,8 +42,8 @@ public class RailwaydataApplication {
 		};
 	}
 
-	@GetMapping("/printalltype")
-	public String printalltype() {
+	@GetMapping("/printtypes")
+	public String printtypes() {
 		List<CarriageType> res = (List<CarriageType>) repository.findAll();
 		StringBuilder builder = new StringBuilder();
 		for (CarriageType type : res) {
@@ -49,4 +52,6 @@ public class RailwaydataApplication {
 		}
 		return builder.toString();
 	}
+//-----------------------------------------------------------------------
+*/
 }

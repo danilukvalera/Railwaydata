@@ -22,8 +22,8 @@ dependencies {
 //	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
 //	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:1.1.9'
 
-//	runtimeOnly 'org.postgresql:postgresql:42.2.10'
-	implementation 'org.postgresql:postgresql:42.2.10'
+	runtimeOnly 'org.postgresql:postgresql:42.2.10'
+//	implementation 'org.postgresql:postgresql:42.2.10'
 
 //	runtimeOnly 'com.h2database:h2'
 //	runtimeOnly 'com.mysql:mysql-connector-j'

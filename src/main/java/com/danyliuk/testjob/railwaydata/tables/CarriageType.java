@@ -10,31 +10,19 @@ public class CarriageType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String type;
+    private String typeCar;
     private int numberSeats;
-
-/*
-//---------------для Н2--------------------
-    protected CarriageType() {
-    }
-
-    public CarriageType(String type, int numberSeats) {
-        this.type = type;
-        this.numberSeats = numberSeats;
-    }
-//------------------------------------------
-*/
 
     public Integer getId() {
         return id;
     }
 
     public String getType() {
-        return type;
+        return typeCar;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String typeCar) {
+        this.typeCar = typeCar;
     }
 
     public void setNumberSeats(int numberSeats) {
@@ -45,10 +33,4 @@ public class CarriageType {
         return numberSeats;
     }
 
-    @Override
-    public String toString(){
-        return String.format(
-                "Тип вагона[id=%d, Тип ='%s', Кол-во мест ='%d']",
-                id, type, numberSeats);
-    }
 }

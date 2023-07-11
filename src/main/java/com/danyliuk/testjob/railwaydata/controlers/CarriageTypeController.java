@@ -26,13 +26,13 @@ public class CarriageTypeController {
     private CarriageTypeRepository carriageTypeRepository;
 
     @PostMapping(path="/add") // Map ONLY POST Requests
-    public @ResponseBody String addNewCarriageType (@RequestParam String type
+    public @ResponseBody String addNewCarriageType (@RequestParam String typeCar
             , @RequestParam int numberSeats) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
         CarriageType carriageType = new CarriageType();
-        carriageType.setType(type);
+        carriageType.setType(typeCar);
         carriageType.setNumberSeats(numberSeats);
         carriageType = carriageTypeRepository.save(carriageType);
 //        Iterable<CarriageType> ccc = carriageTypeRepository.findAll();
@@ -54,14 +54,20 @@ public class CarriageTypeController {
     public @ResponseBody String sqlall() throws SQLException {
 
         try{
-            String url = "jdbc:postgresql://localhost:5433/postgres";
-            String username = "postgres";
-            String password = "mysecretpassword";
+            String url = "jdbc:postgresql://localhost:5433/railway";
+            String username = "root";
+            String password = "dev";
             Class.forName("org.postgresql.Driver").getDeclaredConstructor().newInstance();
             try (Connection connection = DriverManager.getConnection(url, username, password)){
-                String sqlCommand = "SELECT * FROM carriage_type";
                 Statement statement = connection.createStatement();
-                ResultSet result = statement.executeQuery(sqlCommand);
+                statement.executeUpdate(SqlCommands.CREATE_TABLE_CARRIAGE_TYPE);
+                statement.executeUpdate(SqlCommands.getSqlInsertToCarriageType("shared", 81));
+                statement.executeUpdate(SqlCommands.getSqlInsertToCarriageType("econom", 54));
+                statement.executeUpdate(SqlCommands.getSqlInsertToCarriageType("compartment", 36));
+                statement.executeUpdate(SqlCommands.getSqlInsertToCarriageType("super_compartment", 18));
+
+/*
+                ResultSet result = statement.executeQuery(SqlCommands.CREATE_TABLE_CARRIAGE_TYPE);
                 StringBuilder builder = new StringBuilder();
                 while (result.next()) {
                     String type = result.getString("type");
@@ -70,8 +76,10 @@ public class CarriageTypeController {
 //                    builder.append("<br>");
                     builder.append("\n");
                 }
+*/
                 connection.close();
-                return builder.toString();
+                log.info("Таблицы успешно созданы");
+                return new String("Таблицы успешно созданы");
             }
         }
         catch(Exception ex){

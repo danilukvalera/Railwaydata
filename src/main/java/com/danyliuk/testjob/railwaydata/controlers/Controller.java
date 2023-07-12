@@ -1,20 +1,15 @@
 package com.danyliuk.testjob.railwaydata.controlers;
 
 import com.danyliuk.testjob.railwaydata.RailwaydataApplication;
-import com.danyliuk.testjob.railwaydata.repository.TrainRepository;
 import com.danyliuk.testjob.railwaydata.repository.CarriageRepository;
 import com.danyliuk.testjob.railwaydata.repository.CarriageTypeRepository;
+import com.danyliuk.testjob.railwaydata.repository.TrainRepository;
 import com.danyliuk.testjob.railwaydata.tables.Carriage;
-import com.danyliuk.testjob.railwaydata.tables.CarriageType;
 import com.danyliuk.testjob.railwaydata.tables.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +34,7 @@ public class Controller {
     // curl http://localhost:8080/demo/test
     @GetMapping(path="/test")
     public @ResponseBody String test() {
-        return new String("Тестовый эндпоинт");
+        return "Тестовый эндпоинт";
     }
 
     // Эндпоинт добавить вагоны
@@ -154,7 +149,7 @@ public class Controller {
     @PostMapping(path="/infoabouttrain")
     public @ResponseBody String getInfoTrain( @RequestParam int idCar ) {
         Optional<Train> train = trainRepository.findById(idCar);
-        if(! train.isEmpty()) {
+        if(train.isPresent()) {
             String name = train.get().getName();
             int share = train.get().getShareCar();
             int econom = train.get().getEconomCar();
@@ -171,7 +166,7 @@ public class Controller {
         int typeId = carriageTypeRepository.findByTypeCar(typeCar).getId();
         for (int i=0; i < numCar; i++) {
             List<Optional<Carriage>> cars = carriageRepository.findByTypeId(typeId);
-            if(!cars.isEmpty() && !cars.get(0).isEmpty()) {
+            if(!cars.isEmpty() && cars.get(0).isPresent()) {
                 carriageRepository.deleteById(cars.get(0).get().getId());
             }
         }

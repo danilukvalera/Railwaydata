@@ -3,21 +3,20 @@ package com.danyliuk.testjob.railwaydata.controlers;
 public class SqlCommands {
     //Создать строку информации о создании поезда
     public static String createInfoTrain(String name, int share, int econom, int compartment, int superCompartment) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n");
-        builder.append("-------------------------------------------------------------------------");
-        builder.append("\n");
-        builder.append(String.format("Название поезда: %s", name));
-        builder.append("\n");
-        builder.append(String.format("Общих вагонов = %d", share));
-        builder.append("\n");
-        builder.append(String.format("Плацкартных вагонов = %d", econom));
-        builder.append("\n");
-        builder.append(String.format("Купейных вагонов = %d", compartment));
-        builder.append("\n");
-        builder.append(String.format("СВ вагонов = %d", superCompartment));
-        builder.append("\n");
-        return builder.toString();
+        String builder = "\n" +
+                "-------------------------------------------------------------------------" +
+                "\n" +
+                String.format("Название поезда: %s", name) +
+                "\n" +
+                String.format("Общих вагонов = %d", share) +
+                "\n" +
+                String.format("Плацкартных вагонов = %d", econom) +
+                "\n" +
+                String.format("Купейных вагонов = %d", compartment) +
+                "\n" +
+                String.format("СВ вагонов = %d", superCompartment) +
+                "\n";
+        return builder;
     }
 
     //Создать строку информации о создании поезда

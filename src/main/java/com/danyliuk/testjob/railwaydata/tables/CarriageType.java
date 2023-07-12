@@ -13,6 +13,14 @@ public class CarriageType {
     private String typeCar;
     private int numberSeats;
 
+    public CarriageType() {
+    }
+
+    public CarriageType(String typeCar, int numberSeats) {
+        this.typeCar = typeCar;
+        this.numberSeats = numberSeats;
+    }
+
     public Integer getId() {
         return id;
     }

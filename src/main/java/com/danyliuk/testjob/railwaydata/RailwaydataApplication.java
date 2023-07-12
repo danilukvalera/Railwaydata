@@ -32,7 +32,7 @@ public class RailwaydataApplication {
 	@Bean
 	public CommandLineRunner demo(CarriageTypeRepository repository) {
 		return (args) -> {
-			//Создание и инициализация таблиц
+			//Создание и инициализация таблиц кодом SQL
 			try {
 				String url = "jdbc:postgresql://localhost:5433/railway";
 				String username = "root";
@@ -74,16 +74,7 @@ public class RailwaydataApplication {
 Таблицы успешно созданы.
 								""");
 						builder.append("\n");
-						builder.append(String.format("Сформирован поезд: %s", name));
-						builder.append("\n");
-						builder.append(String.format("Общих вагонов = %d", share));
-						builder.append("\n");
-						builder.append(String.format("Плацкартных вагонов = %d", econom));
-						builder.append("\n");
-						builder.append(String.format("Купейных вагонов = %d", compartment));
-						builder.append("\n");
-						builder.append(String.format("СВ вагонов = %d", super_compartment));
-						builder.append("\n");
+						builder.append(createReportTrain(name, share, econom, compartment, super_compartment));
 					}
 
 					connection.close();

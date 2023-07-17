@@ -1,6 +1,11 @@
 package com.danyliuk.testjob.railwaydata;
 
+import com.danyliuk.testjob.railwaydata.entitys.Carriage;
+import com.danyliuk.testjob.railwaydata.entitys.CarriageType;
+import com.danyliuk.testjob.railwaydata.entitys.Train;
+import com.danyliuk.testjob.railwaydata.repository.CarriageRepository;
 import com.danyliuk.testjob.railwaydata.repository.CarriageTypeRepository;
+import com.danyliuk.testjob.railwaydata.repository.TrainRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -8,77 +13,58 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.*;
 
-import static com.danyliuk.testjob.railwaydata.controlers.SqlCommands.*;
+import static com.danyliuk.testjob.railwaydata.constants.Constants.*;
 
 @SpringBootApplication
 public class RailwaydataApplication {
-	private static final Logger log = LoggerFactory.getLogger(RailwaydataApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(RailwaydataApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(RailwaydataApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(RailwaydataApplication.class, args);
+    }
 
-	@Bean
-	public CommandLineRunner demo(CarriageTypeRepository repository) {
-		return (args) -> {
-			//Создание и инициализация таблиц кодом SQL
-			try {
-				String url = "jdbc:postgresql://localhost:5433/railway";
-				String username = "root";
-				String password = "dev";
-				Class.forName("org.postgresql.Driver").getDeclaredConstructor().newInstance();
-				try (Connection connection = DriverManager.getConnection(url, username, password)) {
-					Statement statement = connection.createStatement();
-					statement.executeUpdate(REMOVE_TABLE_CARRIAGE_TYPE);
-					statement.executeUpdate(CREATE_TABLE_CARRIAGE_TYPE);
-					statement.executeUpdate(getSqlInsertToCarriageType(TYPE_SHARED, 81));
-					statement.executeUpdate(getSqlInsertToCarriageType(TYPE_ECONOM, 54));
-					statement.executeUpdate(getSqlInsertToCarriageType(TYPE_COMP, 36));
-					statement.executeUpdate(getSqlInsertToCarriageType(TYPE_SUPER_COMP, 18));
+    @Bean
+    public CommandLineRunner demo(CarriageTypeRepository carriageTypeRepository, CarriageRepository carriageRepository, TrainRepository trainRepository) {
+        return (args) -> {
+            Map<String, Integer> typesMap = new HashMap<>();
+            typesMap.put(TYPE_SHARED, 81);
+            typesMap.put(TYPE_ECONOM, 54);
+            typesMap.put(TYPE_COMP, 36);
+            typesMap.put(TYPE_SUPER_COMP, 18);
+            ArrayList<CarriageType> listType = new ArrayList<>();
 
-					statement.executeUpdate(REMOVE_TABLE_CARRIAGE);
-					statement.executeUpdate(CREATE_TABLE_CARRIAGE);
-					for(int i=0; i<INIT_NUM_CAR; i++) {
-						statement.executeUpdate(getSqlInsertToCarriage(TYPE_SHARED));
-						statement.executeUpdate(getSqlInsertToCarriage(TYPE_ECONOM));
-						statement.executeUpdate(getSqlInsertToCarriage(TYPE_COMP));
-						statement.executeUpdate(getSqlInsertToCarriage(TYPE_SUPER_COMP));
-					}
+            for (Map.Entry<String, Integer> item : typesMap.entrySet()) {
+                CarriageType carriageType = new CarriageType();
+                carriageType.setNameCar(item.getKey());
+                carriageType.setNumberSeats(item.getValue());
+                listType.add(carriageType);
+            }
 
-					statement.executeUpdate(REMOVE_TABLE_TRAIN);
-					statement.executeUpdate(CREATE_TABLE_TRAIN);
-					statement.executeUpdate(getSqlInsertToTrain("Украина-Победа", 0, 0, 5, 5));
+            carriageTypeRepository.saveAll(listType);
 
-					ResultSet result = statement.executeQuery(GET_ALL_TRAINS);
-					StringBuilder builder = new StringBuilder();
-					while (result.next()) {
-						String name = result.getString("name");
-						int share = result.getInt("share_car");
-						int econom = result.getInt("econom_car");
-						int compartment = result.getInt("compartment_car");
-						int super_compartment = result.getInt("super_compartment_car");
-						builder.append("""
+            ArrayList<Carriage> listCar = new ArrayList<>();
+            Iterable<CarriageType> typesIter = carriageTypeRepository.findAll();
 
-----------------------------------------------------------
-Таблицы успешно созданы.
-								""");
-						builder.append("\n");
-						builder.append(createReportTrain(name, share, econom, compartment, super_compartment));
-					}
+            StreamSupport.stream(typesIter.spliterator(), false).forEach(carriageType -> {   //конвертация Iterable в Stream
+                for (int i = 0; i < INIT_NUM_CAR; i++) {
+                    Carriage carriage = new Carriage();
+                    carriage.setTypeCar(carriageType);
+                    listCar.add(carriage);
+                }
+            });
 
-					connection.close();
-					log.info(builder.toString());
-				}
-			} catch (Exception ex) {
-				log.error("Ошибка создания таблиц.");
-				log.error("Перезапустите приложение. Ошибка иногда возникает из-за случайного изменения порядка столбцов в программе (похоже на баг Postgres)");
-				log.error(ex.toString());
-			}
-		};
-	}
+            carriageRepository.saveAll(listCar);
+
+			Train train = new Train();
+			train.setName("Украина-Победа");
+            train.setListCarriages(listCar);
+            trainRepository.save(train);
+
+        };
+    }
 }
